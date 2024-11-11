@@ -5,7 +5,7 @@ using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
 
 /// <summary>
-/// Àâ´Â ¿ÀºêÁ§Æ® »óÈ£ÀÛ¿ë ½Ã ¼Õ ¾ø¾îÁö°Ô ÇÏ´Â ÄÄÆ÷³ÍÆ®
+/// ì¡ëŠ” ì˜¤ë¸Œì íŠ¸ ìƒí˜¸ì‘ìš© ì‹œ ì† ì—†ì–´ì§€ê²Œ í•˜ëŠ” ì»´í¬ë„ŒíŠ¸
 /// </summary>
 public class GrabbingHandDisabler : MonoBehaviour
 {
@@ -17,11 +17,11 @@ public class GrabbingHandDisabler : MonoBehaviour
 
         if(grabInteractable == null)
         {
-            Debug.LogError("Grab Interacter°¡ Á¸ÀçÇÏÁö ¾ÊÀ½");
+            Debug.LogError("Grab Interacterê°€ ì¡´ì¬í•˜ì§€ ì•ŠìŒ");
             return;
         }
 
-        //ÀÌº¥Æ® Ãß°¡
+        //ì´ë²¤íŠ¸ ì¶”ê°€
         grabInteractable.selectEntered.AddListener(HideGrabbingHand);
         grabInteractable.selectExited.AddListener(ShowGrabbingHand);
 
@@ -36,7 +36,7 @@ public class GrabbingHandDisabler : MonoBehaviour
         if(controller != null)
         {
             controller.model.gameObject.SetActive(false);
-            Debug.Log("¼Õ ºñÈ°¼ºÈ­");
+            Debug.Log("ì† ë¹„í™œì„±í™”");
         }
 
         
@@ -51,7 +51,7 @@ public class GrabbingHandDisabler : MonoBehaviour
         if (controller != null)
         {
             controller.model.gameObject.SetActive(true);
-            Debug.Log("¼Õ È°¼ºÈ­");
+            Debug.Log("ì† í™œì„±í™”");
         }
     }
 }
