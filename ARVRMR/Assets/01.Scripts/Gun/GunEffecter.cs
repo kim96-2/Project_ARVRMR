@@ -26,6 +26,7 @@ public class GunEffecter : MonoBehaviour
         flashLightMultipler = 0f;
         defaultFlashLightValue = flashLight.intensity;
         flashLight.intensity = defaultFlashLightValue * flashLightMultipler;
+        flashLight.enabled = false;
 
         shooter = GetComponentInParent<GunShooter>();
         if(shooter ==null) TryGetComponent<GunShooter>(out shooter);
@@ -61,6 +62,8 @@ public class GunEffecter : MonoBehaviour
     Coroutine lightCoroutine;
     IEnumerator LigthAnim()
     {
+        flashLight.enabled = true;
+
         float _time = 0f;
 
         while (_time < flashLightDuration)
@@ -75,6 +78,8 @@ public class GunEffecter : MonoBehaviour
         }
 
         flashLightMultipler = 0f;
+        flashLight.intensity = defaultFlashLightValue * flashLightMultipler;
+        flashLight.enabled = false;
 
     }
 }
