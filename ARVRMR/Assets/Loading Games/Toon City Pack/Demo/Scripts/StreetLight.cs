@@ -8,7 +8,7 @@ public class StreetLight : MonoBehaviour {
     public bool isOn;
 
     private void Start() {
-        SetLight(isOn);
+        //SetLight(isOn);
     }
 
     public void SetLight(bool isOn) {
