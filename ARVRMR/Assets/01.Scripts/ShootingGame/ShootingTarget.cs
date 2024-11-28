@@ -17,11 +17,13 @@ public class ShootingTarget : MonoBehaviour
     void Update()
     {
         //테스트
-        if (Input.GetMouseButtonDown(0)) Hit(Vector3.zero);
+        //if (Input.GetMouseButtonDown(0)) Hit(Vector3.zero);
     }
 
     public void Hit(Vector3 hitPos)
     {
+        Debug.Log("과녁 맞음");
+
         //해드샷 여부 계산
         Vector3 targetCenter = transform.TransformPoint(hitCollider.center);
 

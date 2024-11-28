@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,6 +19,25 @@ public class ShootingGameManager : MonoBehaviour
     [Space(15f)]
     [SerializeField] BoxCollider rangeCollider;
     [SerializeField] float yOffset;
+
+    [Header("Score Setting")]
+    [SerializeField] float hitScore = 10;
+    [SerializeField] float headShotScore = 20;
+
+    public event Action<float> OnScoreChange;
+
+    private float _score;
+    public float Score { 
+        get {
+            return _score; 
+        }
+        private set
+        {
+            _score = value;
+
+            OnScoreChange?.Invoke(_score);
+        }
+    }
     
     private void Awake()
     {
@@ -36,6 +56,8 @@ public class ShootingGameManager : MonoBehaviour
 
     public void StartGame()
     {
+        Score = 0;
+
         CreateTarget();
     }
 
@@ -47,8 +69,8 @@ public class ShootingGameManager : MonoBehaviour
         float range_x = rangeCollider.bounds.size.x;
         float range_z = rangeCollider.bounds.size.z;
 
-        range_x = Random.Range(range_x / 2f * -1, range_x / 2f);
-        range_z = Random.Range(range_z / 2f * -1, range_z / 2f);
+        range_x = UnityEngine.Random.Range(range_x / 2f * -1, range_x / 2f);
+        range_z = UnityEngine.Random.Range(range_z / 2f * -1, range_z / 2f);
 
         Vector3 spawnPos = new Vector3(range_x,0,range_z) + spawnPosCenter;
         spawnPos.y = yOffset;
@@ -61,6 +83,8 @@ public class ShootingGameManager : MonoBehaviour
 
     public void TargetDestroyed(bool headShot)
     {
+        Score += headShot ? headShotScore : hitScore;
+
         CreateTarget();
     }
 
