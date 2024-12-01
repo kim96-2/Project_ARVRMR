@@ -8,14 +8,7 @@ public class BowlingBall : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        Vector3 spinAxis = Vector3.up;
-        float spinSpeed = 40f;
-        rb.angularVelocity = spinAxis * spinSpeed;
-
-        Vector3 forceDirection = new Vector3(-.75f, 0.5f, 10.0f);
-        int forceMagnitude = 130;
-        GetComponent<Rigidbody>().AddForce(forceDirection.normalized * forceMagnitude, ForceMode.Impulse);
+        TestBowlingBall();
     }
 
     // Update is called once per frame
@@ -26,5 +19,20 @@ public class BowlingBall : MonoBehaviour
             Vector3 sideForce = new Vector3(rb.angularVelocity.y * 0.25f, 0, 0);
             rb.AddForce(sideForce);
         }
+    }
+
+    public void TestBowlingBall() 
+    {
+        rb = GetComponent<Rigidbody>();
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        Vector3 spinAxis = Vector3.up;
+        float spinSpeed = 40f;
+        rb.angularVelocity = spinAxis * spinSpeed;
+
+        Vector3 forceDirection = new Vector3(-.75f, 0.5f, 10.0f);
+        int forceMagnitude = 130;
+        GetComponent<Rigidbody>().AddForce(forceDirection.normalized * forceMagnitude, ForceMode.Impulse);
     }
 }
