@@ -13,10 +13,14 @@ public class BowlingSystem : MonoBehaviour
     [SerializeField] private List<BowlingFrameScore> bowlingScoreList = new();
     [SerializeField] private GameObject bowlingScoreText;
 
-    float BALL_THRESHOLD = -5.0f;
+    float BALL_RESET_X_THRESHOLD = 1.7f;
+    float BALL_RESET_Z_THRESHOLD = -0.25f;
+    float BALL_TRY_Z_THRESHOLD = 3.0f;
+    float BALL_IN_Y_THRESHOLD = -5.0f;
     float PIN_THRESHOLD = -0.01f;
     bool[] pinStates = new bool[10];
 
+    private bool isRolling = false;
     private bool isProgressed = false;
 
     float MAX_FRAME_NUMBER = 5;
@@ -31,20 +35,42 @@ public class BowlingSystem : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (bowlingBall.transform.position.y < BALL_THRESHOLD) 
+        if (bowlingBall.transform.position.x < -BALL_RESET_X_THRESHOLD || bowlingBall.transform.position.x > BALL_RESET_X_THRESHOLD || bowlingBall.transform.position.z < BALL_RESET_Z_THRESHOLD)
         {
-            bowlingBall.transform.position = Vector3.up;
+            ResetBallPosition();
+        }
+        if (bowlingBall.transform.position.z > BALL_TRY_Z_THRESHOLD && !isRolling)
+        {
+            isRolling = true;
+            StartCoroutine(Timeout());
+        }
+
+        if (bowlingBall.transform.position.y < BALL_IN_Y_THRESHOLD)
+        {
+            ResetBallPosition();
+
             StopAllCoroutines();
             StartCoroutine(WaitPinsStable());
         }
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            bowlingBall.GetComponent<Rigidbody>().velocity = Vector3.zero;
-            bowlingBall.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-            bowlingBall.transform.position = new Vector3(0.2f, 0.3f, 1.99f);
+            ResetBallPosition();
+
             bowlingBall.GetComponent<BowlingBall>().TestBowlingBall();
         }
+    }
+    void ResetBallPosition() 
+    {
+        isRolling = false;
+        bowlingBall.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        bowlingBall.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+        bowlingBall.transform.position = new Vector3(0.2f, 0.3f, 1.8f);
+    }
+    IEnumerator Timeout() 
+    {
+        yield return new WaitForSeconds(30.0f);
+        ResetBallPosition();
     }
     IEnumerator WaitPinsStable() 
     {
@@ -57,7 +83,7 @@ public class BowlingSystem : MonoBehaviour
             float velocities = 0;
             for (int i = 0; i < bowlingPinPositions.Length; i++)
             {
-                if (bowlingPins.transform.GetChild(i).transform.position.y < BALL_THRESHOLD) continue;
+                if (bowlingPins.transform.GetChild(i).transform.position.y < BALL_IN_Y_THRESHOLD) continue;
                 velocities += bowlingPins.transform.GetChild(i).GetComponent<Rigidbody>().velocity.magnitude;
                 velocities += bowlingPins.transform.GetChild(i).GetComponent<Rigidbody>().angularVelocity.magnitude;
             }

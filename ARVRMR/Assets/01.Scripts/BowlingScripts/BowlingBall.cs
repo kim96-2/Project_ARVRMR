@@ -5,13 +5,11 @@ using UnityEngine;
 public class BowlingBall : MonoBehaviour
 {
     Rigidbody rb;
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        TestBowlingBall();
+        rb = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         if (rb.angularVelocity.magnitude > 0.1f)
@@ -23,7 +21,6 @@ public class BowlingBall : MonoBehaviour
 
     public void TestBowlingBall() 
     {
-        rb = GetComponent<Rigidbody>();
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
 
