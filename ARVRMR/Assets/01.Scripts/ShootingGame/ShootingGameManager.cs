@@ -21,6 +21,8 @@ public class ShootingGameManager : MonoBehaviour
     [SerializeField] BoxCollider rangeCollider;
     [SerializeField] float yOffset;
 
+    [SerializeField] Transform targetPoss;
+
     [Header("Score Setting")]
     [SerializeField] float hitScore = 10;
     [SerializeField] float headShotScore = 20;
@@ -76,6 +78,7 @@ public class ShootingGameManager : MonoBehaviour
     public void CreateTarget()
     {
         //타겟 생성 위치 계산
+        /*
         Vector3 spawnPosCenter = rangeCollider.transform.position;
 
         float range_x = rangeCollider.bounds.size.x;
@@ -86,6 +89,10 @@ public class ShootingGameManager : MonoBehaviour
 
         Vector3 spawnPos = new Vector3(range_x,0,range_z) + spawnPosCenter;
         spawnPos.y = yOffset;
+        */
+
+        //임의로 지정된 위치중에서 무작위로 하나 선택하는 방법으로 변경
+        Vector3 spawnPos = targetPoss.GetChild(UnityEngine.Random.Range(0, targetPoss.childCount)).position;
 
         //타겟 생성
         currentTargetObject = Instantiate(target, spawnPos, target.transform.rotation);
