@@ -180,7 +180,7 @@ GameObject:
   - component: {fileID: 2274924037322717201}
   - component: {fileID: 2340403869509062961}
   m_Layer: 0
-  m_Name: TestTarget
+  m_Name: Target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -217,6 +217,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hitCollider: {fileID: 2340403869509062961}
   headShotRange: 0.5
+  destroyedParticle: {fileID: 6179499809281993773, guid: 0a0573174ac9e3342b0021a8302c1c16,
+    type: 3}
 --- !u!33 &4204313083779372818
 MeshFilter:
   m_ObjectHideFlags: 0

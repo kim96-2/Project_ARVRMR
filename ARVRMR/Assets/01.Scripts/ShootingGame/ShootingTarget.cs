@@ -7,6 +7,9 @@ public class ShootingTarget : MonoBehaviour
     [SerializeField] BoxCollider hitCollider;
     [SerializeField, Range(0f, 1f)] float headShotRange = 0.5f;
 
+    [Space(15f)]
+    [SerializeField] GameObject destroyedParticle;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,6 +38,8 @@ public class ShootingTarget : MonoBehaviour
 
         //맞았다고 게임매니져에게 전달
         ShootingGameManager.Instance.TargetDestroyed(headShot);
+
+        Instantiate(destroyedParticle,transform.position, destroyedParticle.transform.rotation);
 
         Destroy(this.gameObject);
     }

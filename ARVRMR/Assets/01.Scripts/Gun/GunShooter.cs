@@ -10,7 +10,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 /// </summary>
 public class GunShooter : MonoBehaviour
 {
-    public Action shootAction;
+    public Action<ActivateEventArgs> shootAction;
 
     [SerializeField] Transform shootPos;
     [SerializeField] Transform shootDirPos;
@@ -18,6 +18,9 @@ public class GunShooter : MonoBehaviour
     [Space(15f)]
     [SerializeField] float shootMaxDistance = 100f;
     [SerializeField] LayerMask shootMask;
+
+    [Space(15f)]
+    [SerializeField] GameObject hitParticle;
 
     // Start is called before the first frame update
     void Start()
@@ -55,7 +58,10 @@ public class GunShooter : MonoBehaviour
         RaycastHit hit;
         if(Physics.Raycast(shootPos.position,shootDirPos.position - shootPos.position, out hit, shootMaxDistance, shootMask))
         {
-            Debug.Log(hit.collider.gameObject.name);
+            //Debug.Log(hit.collider.gameObject.name);
+
+            //총알 hit effect 생성
+            Instantiate(hitParticle, hit.point - (shootDirPos.position - shootPos.position).normalized * 0.1f, hitParticle.transform.rotation);
 
             ShootingTarget target;
             if(hit.collider.gameObject.TryGetComponent<ShootingTarget>(out target))
@@ -65,6 +71,6 @@ public class GunShooter : MonoBehaviour
         }
 
         //사격 액션 실행
-        shootAction?.Invoke();
+        shootAction?.Invoke(args);
     }
 }

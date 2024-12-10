@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Experimental.GlobalIllumination;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class GunEffecter : MonoBehaviour
 {
@@ -17,6 +18,10 @@ public class GunEffecter : MonoBehaviour
 
     float flashLightMultipler;
     float defaultFlashLightValue;
+
+    [Header("Haptic")]
+    [SerializeField] float hapticIntensity = 2f;
+    [SerializeField] float hapticDuration = 0.2f;
 
     GunShooter shooter;
 
@@ -45,17 +50,23 @@ public class GunEffecter : MonoBehaviour
         }
     }
 
-    public void Shoot()
+    public void Shoot(ActivateEventArgs args)
     {
         //파티클 생성
         shootFlashParticle.Emit(flashParticleCount);
-
+        
         //라이트 애니메이션
         if (flashLight)
         {
             if(lightCoroutine!=null) StopCoroutine(lightCoroutine);
 
             lightCoroutine = StartCoroutine(LigthAnim());
+        }
+
+        //햅틱 적용
+        if(args.interactorObject is XRBaseControllerInteractor interactor)
+        {
+            TriggerHaptic(interactor.xrController);
         }
     }
 
@@ -81,5 +92,13 @@ public class GunEffecter : MonoBehaviour
         flashLight.intensity = defaultFlashLightValue * flashLightMultipler;
         flashLight.enabled = false;
 
+    }
+
+    void TriggerHaptic(XRBaseController controller)
+    {
+        if(hapticIntensity > 0f)
+        {
+            controller.SendHapticImpulse(hapticIntensity, hapticDuration);
+        }
     }
 }
