@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,6 +23,22 @@ public class GunEffecter : MonoBehaviour
     [Header("Haptic")]
     [SerializeField] float hapticIntensity = 2f;
     [SerializeField] float hapticDuration = 0.2f;
+
+    [Serializable]
+    class AnimationValue
+    {
+        public Vector3 pos;
+        public float rot;
+    }
+    [Header("Animation")]
+    [SerializeField] AnimationValue startAnimValue;
+    [SerializeField] AnimationValue endAnimValue;
+    [SerializeField] float animDuration;
+    [SerializeField] AnimationCurve animCurve;
+
+    [Space(5f)]
+    [SerializeField] Transform animTarget;
+
 
     GunShooter shooter;
 
@@ -52,6 +69,9 @@ public class GunEffecter : MonoBehaviour
 
     public void Shoot(ActivateEventArgs args)
     {
+        //반동 애니메이션 실행
+        StartAnim();
+
         //파티클 생성
         shootFlashParticle.Emit(flashParticleCount);
         
@@ -70,6 +90,7 @@ public class GunEffecter : MonoBehaviour
         }
     }
 
+    #region Light
     Coroutine lightCoroutine;
     IEnumerator LigthAnim()
     {
@@ -93,12 +114,61 @@ public class GunEffecter : MonoBehaviour
         flashLight.enabled = false;
 
     }
+    #endregion
 
+    #region Haptic
     void TriggerHaptic(XRBaseController controller)
     {
-        if(hapticIntensity > 0f)
+        if (hapticIntensity > 0f)
         {
             controller.SendHapticImpulse(hapticIntensity, hapticDuration);
         }
     }
+
+    #endregion
+
+    #region Animation
+    
+    Coroutine AnimCoroutine;
+
+    /// <summary>
+    /// 무기 반동 애니메이션
+    /// </summary>
+    void StartAnim()
+    {
+        if(AnimCoroutine!= null)
+        {
+            StopCoroutine(AnimCoroutine);
+        }
+
+        AnimCoroutine = StartCoroutine(AnimationPlay());
+    }
+
+    IEnumerator AnimationPlay()
+    {
+        float _time = 0f;
+
+        while(_time < animDuration)
+        {
+            Vector3 _pos = Vector3.Lerp(startAnimValue.pos, endAnimValue.pos, _time / animDuration);
+            
+            float _rot = Mathf.Lerp(startAnimValue.rot, endAnimValue.rot, _time / animDuration);
+            Quaternion _rotEuler = Quaternion.Euler(0, 0, _rot);
+
+            animTarget.localPosition = _pos;
+            animTarget.localRotation = _rotEuler;
+
+            _time += Time.deltaTime;
+
+            //Debug.Log(_rot);
+
+            yield return null;
+        }
+
+        animTarget.localPosition = Vector3.zero;
+        animTarget.localRotation = Quaternion.identity;
+
+        AnimCoroutine = null;
+    }
+    #endregion
 }
