@@ -15,6 +15,7 @@ public class ShootingGameManager : MonoBehaviour
     public static ShootingGameManager Instance {  get { return _instance; } }
 
     [SerializeField] GameObject target;
+    GameObject currentTargetObject;
 
     [Space(15f)]
     [SerializeField] BoxCollider rangeCollider;
@@ -38,7 +39,15 @@ public class ShootingGameManager : MonoBehaviour
             OnScoreChange?.Invoke(_score);
         }
     }
+
+    [Header("Timer Setting")]
+    [SerializeField] float gameDuration = 60;
     
+    float timeLeft;
+    public float TimeLeft { get => timeLeft;}
+
+    public event Action OnGameEnd;
+
     private void Awake()
     {
         if(_instance != null)
@@ -59,6 +68,9 @@ public class ShootingGameManager : MonoBehaviour
         Score = 0;
 
         CreateTarget();
+
+        if (TimerCoroutine != null) StopCoroutine(TimerCoroutine);
+        TimerCoroutine = StartCoroutine(GameTimer());
     }
 
     public void CreateTarget()
@@ -76,7 +88,7 @@ public class ShootingGameManager : MonoBehaviour
         spawnPos.y = yOffset;
 
         //타겟 생성
-        Instantiate(target, spawnPos, target.transform.rotation);
+        currentTargetObject = Instantiate(target, spawnPos, target.transform.rotation);
 
 
     }
@@ -88,6 +100,33 @@ public class ShootingGameManager : MonoBehaviour
         CreateTarget();
     }
 
+    Coroutine TimerCoroutine;
+    IEnumerator GameTimer()
+    {
+        timeLeft = gameDuration;
 
+        while (timeLeft > 0)
+        {
+            timeLeft -= Time.deltaTime;
+
+            yield return null;
+        }
+
+        timeLeft = 0f;
+
+        TimerCoroutine = null;
+
+        EndGame();
+    }
+
+    void EndGame()
+    {
+        if(currentTargetObject != null)
+        {
+            Destroy(currentTargetObject);
+        }
+
+        OnGameEnd?.Invoke();
+    }
     
 }
