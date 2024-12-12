@@ -1,0 +1,34 @@
+{
+    "name": "Controls",
+    "maps": [
+        {
+            "name": "SceneChange",
+            "id": "944f4e5b-40af-41f5-8ec3-8f0bc2f97472",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "038f6096-8bd3-4074-b56e-05c3f806e874",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "fdd62355-b734-4190-909a-1b29755dc780",
+                    "path": "<XRController>{RightHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

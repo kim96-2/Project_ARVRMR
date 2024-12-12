@@ -1239,6 +1239,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "PrimaryButtonAction",
+                    "type": "Button",
+                    "id": "c883d78a-8356-48b2-be0f-6c2b3f6dbbc1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1470,6 +1479,17 @@
                     "processors": "",
                     "groups": "Generic XR Controller",
                     "action": "Grip Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c2114773-805a-4c37-a38f-dbb1e65400c7",
+                    "path": "<XRController>{RightHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PrimaryButtonAction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
