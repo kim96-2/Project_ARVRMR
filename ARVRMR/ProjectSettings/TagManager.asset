@@ -4,8 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Right Hand
+  - Ground
   - Left Hand
+  - Right Hand
+  - Basketball
   layers:
   - Default
   - TransparentFX
