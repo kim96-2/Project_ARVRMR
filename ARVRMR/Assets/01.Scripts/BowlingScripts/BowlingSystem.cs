@@ -42,6 +42,7 @@ public class BowlingSystem : MonoBehaviour
         if (bowlingBall.transform.position.z > BALL_TRY_Z_THRESHOLD && !isRolling)
         {
             isRolling = true;
+            StopCoroutine(Timeout());
             StartCoroutine(Timeout());
         }
 
@@ -49,19 +50,23 @@ public class BowlingSystem : MonoBehaviour
         {
             ResetBallPosition();
 
-            StopAllCoroutines();
             StartCoroutine(WaitPinsStable());
         }
 
-        if (Input.GetKeyDown(KeyCode.Q))
+#if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.Q) && !isProgressed)
         {
             ResetBallPosition();
 
             bowlingBall.GetComponent<BowlingBall>().TestBowlingBall();
         }
     }
+#endif
     void ResetBallPosition() 
     {
+        if (bowlingScoreList.Count > MAX_FRAME_NUMBER) return;
+        if (Vector3.Distance(bowlingBall.transform.position, new Vector3(0.2f, 0.3f, 1.8f)) < 1) return;
+
         isRolling = false;
         bowlingBall.GetComponent<Rigidbody>().velocity = Vector3.zero;
         bowlingBall.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
@@ -70,6 +75,7 @@ public class BowlingSystem : MonoBehaviour
     IEnumerator Timeout() 
     {
         yield return new WaitForSeconds(30.0f);
+        if (isRolling || isProgressed) yield break;
         ResetBallPosition();
     }
     IEnumerator WaitPinsStable() 
@@ -142,7 +148,7 @@ public class BowlingSystem : MonoBehaviour
 
         if (bowlingScoreList[bowlingScoreList.Count - 1].IsFrameEnd())
         {
-            if (bowlingScoreList.Count == MAX_FRAME_NUMBER)
+            if (bowlingScoreList.Count >= MAX_FRAME_NUMBER)
             {
                 //end bowling game
             }
@@ -166,7 +172,6 @@ public class BowlingSystem : MonoBehaviour
 
             bowlingPins.transform.GetChild(i).GetComponent<Rigidbody>().MovePosition(bowlingPins.transform.position + bowlingPinPositions[i]);
             bowlingPins.transform.GetChild(i).GetComponent<Rigidbody>().MoveRotation(Quaternion.Euler(new Vector3(-90, 0, 0)));
-            //BowlingPins.transform.GetChild(i).transform.SetLocalPositionAndRotation(bowlingPinPositions[i], Quaternion.Euler(new Vector3(-90, 0, 0)));
             a++;
             if (pinStates[i])
             {
@@ -180,6 +185,7 @@ public class BowlingSystem : MonoBehaviour
         isShutterMove = true;
         isProgressed = false;
 
+        StopCoroutine(Timeout());
         yield break;
     }
 

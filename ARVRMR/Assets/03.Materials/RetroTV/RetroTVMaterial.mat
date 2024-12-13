@@ -63,7 +63,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _R_Offset: 0.14
-    - _SaturationValue: 0.391
+    - _SaturationValue: 0.9
     m_Colors:
     - _Color: {r: 0.804418, g: 1, b: 0.7754717, a: 0}
   m_BuildTextureStacks: []
