@@ -25,7 +25,7 @@ public class BowlingBall : MonoBehaviour
         rb.angularVelocity = Vector3.zero;
 
         Vector3 spinAxis = Vector3.up;
-        float spinSpeed = 40f;
+        float spinSpeed = 40f + Random.Range(-10, 10);
         rb.angularVelocity = spinAxis * spinSpeed;
 
         Vector3 forceDirection = new Vector3(-.75f, 0.5f, 10.0f);
