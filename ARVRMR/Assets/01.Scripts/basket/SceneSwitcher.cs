@@ -34,7 +34,12 @@ public class SceneSwitcher : MonoBehaviour
         }
     }
 
-    private void OnSceneChange(InputAction.CallbackContext context)
+    public void OnSceneChange(InputAction.CallbackContext context)
+    {
+        ChangeSCene();
+    }
+
+    public void ChangeSCene()
     {
         string currentScene = SceneManager.GetActiveScene().name;
 
