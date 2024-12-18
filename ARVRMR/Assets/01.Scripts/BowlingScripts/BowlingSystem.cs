@@ -61,8 +61,9 @@ public class BowlingSystem : MonoBehaviour
 
             bowlingBall.GetComponent<BowlingBall>().TestBowlingBall();
         }
-    }
+    
 #endif
+    }
     void ResetBallPosition() 
     {
         if (bowlingScoreList.Count > MAX_FRAME_NUMBER) return;
@@ -81,11 +82,11 @@ public class BowlingSystem : MonoBehaviour
     }
     IEnumerator WaitPinsStable() 
     {
-        float limit = 10;
+        float limit = 5;
         while (limit > 0) 
         {
-            yield return new WaitForSeconds(Time.deltaTime);
-            limit -= Time.deltaTime;
+            yield return new WaitForSeconds(0.01f);
+            limit -= 0.01f;
 
             float velocities = 0;
             for (int i = 0; i < bowlingPinPositions.Length; i++)
@@ -207,13 +208,13 @@ public class BowlingSystem : MonoBehaviour
 
         while (true)
         {
-            yield return new WaitForSeconds(Time.deltaTime);
+            yield return new WaitForSeconds(0.01f);
             if (!isShutterMove)
             {
                 continue;
             }
             Vector3 tmpPos = bowlingShutter.transform.localPosition;
-            tmpPos.y += dir * speed * Time.deltaTime;
+            tmpPos.y += dir * speed * 0.01f;
             bowlingShutter.transform.localPosition = tmpPos;
 
             if (tmpPos.y < downYPosition)
