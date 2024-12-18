@@ -50,6 +50,7 @@ public class BowlingSystem : MonoBehaviour
         {
             ResetBallPosition();
 
+            StopCoroutine(WaitPinsStable());
             StartCoroutine(WaitPinsStable());
         }
 
@@ -60,8 +61,8 @@ public class BowlingSystem : MonoBehaviour
 
             bowlingBall.GetComponent<BowlingBall>().TestBowlingBall();
         }
-    }
 #endif
+    }
     void ResetBallPosition() 
     {
         if (bowlingScoreList.Count > MAX_FRAME_NUMBER) return;
@@ -70,7 +71,7 @@ public class BowlingSystem : MonoBehaviour
         isRolling = false;
         bowlingBall.GetComponent<Rigidbody>().velocity = Vector3.zero;
         bowlingBall.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-        bowlingBall.transform.position = new Vector3(0.2f, 0.3f, 1.8f);
+        bowlingBall.GetComponent<Rigidbody>().MovePosition(new Vector3(0.2f, 0.3f, 1.8f));
     }
     IEnumerator Timeout() 
     {
@@ -103,6 +104,7 @@ public class BowlingSystem : MonoBehaviour
     {
         if (isProgressed) return;
         isProgressed = true;
+        StopCoroutine(ShutterAnimation());
         StartCoroutine(ShutterAnimation());
         CheckPins();
         CalculateScore();
