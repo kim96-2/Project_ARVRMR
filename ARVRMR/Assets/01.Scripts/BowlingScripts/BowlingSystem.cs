@@ -42,7 +42,7 @@ public class BowlingSystem : MonoBehaviour
         if (bowlingBall.transform.position.z > BALL_TRY_Z_THRESHOLD && !isRolling)
         {
             isRolling = true;
-            StopCoroutine(Timeout());
+            StopCoroutine("Timeout");
             StartCoroutine(Timeout());
         }
 
@@ -50,19 +50,19 @@ public class BowlingSystem : MonoBehaviour
         {
             ResetBallPosition();
 
-            StopCoroutine(WaitPinsStable());
             StartCoroutine(WaitPinsStable());
         }
 
 #if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.Q) && !isProgressed)
         {
+            if (bowlingScoreList.Count > MAX_FRAME_NUMBER && bowlingScoreList[bowlingScoreList.Count - 1].IsFrameEnd()) return;
             ResetBallPosition();
 
             bowlingBall.GetComponent<BowlingBall>().TestBowlingBall();
         }
-#endif
     }
+#endif
     void ResetBallPosition() 
     {
         if (bowlingScoreList.Count > MAX_FRAME_NUMBER) return;
@@ -71,7 +71,7 @@ public class BowlingSystem : MonoBehaviour
         isRolling = false;
         bowlingBall.GetComponent<Rigidbody>().velocity = Vector3.zero;
         bowlingBall.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-        bowlingBall.GetComponent<Rigidbody>().MovePosition(new Vector3(0.2f, 0.3f, 1.8f));
+        bowlingBall.transform.position = new Vector3(0.2f, 0.3f, 1.8f);
     }
     IEnumerator Timeout() 
     {
@@ -104,11 +104,12 @@ public class BowlingSystem : MonoBehaviour
     {
         if (isProgressed) return;
         isProgressed = true;
-        StopCoroutine(ShutterAnimation());
-        StartCoroutine(ShutterAnimation());
+
+        StopCoroutine("Timeout");
         CheckPins();
         CalculateScore();
-        StartCoroutine(ResetAnimation(new WaitForSeconds(2.0f)));
+        StopCoroutine("ShutterAnimation");
+        StartCoroutine(ShutterAnimation());
     }
 
     private void CheckPins()
@@ -156,6 +157,7 @@ public class BowlingSystem : MonoBehaviour
             }
             else
             {
+                Debug.LogError(bowlingScoreList[bowlingScoreList.Count - 1].IsFrameEnd());
                 bowlingScoreList.Add(new BowlingFrameScore(bowlingScoreList.Count + 1));
                 for (int i = 0; i < pinStates.Length; i++) pinStates[i] = false;
             }
@@ -163,10 +165,9 @@ public class BowlingSystem : MonoBehaviour
 
         bowlingScoreText.GetComponent<BowlingScoreText>().SetBowlingScoreUI(bowlingScoreList);
     }
-    IEnumerator ResetAnimation(WaitForSeconds wait)
+    private void ResetPin()
     {
-        yield return wait;
-        int a=0, b = 0;
+        int a = 0, b = 0;
         for (int i = 0; i < bowlingPinPositions.Length; i++)
         {
             bowlingPins.transform.GetChild(i).GetComponent<Rigidbody>().velocity = Vector3.zero;
@@ -180,25 +181,29 @@ public class BowlingSystem : MonoBehaviour
                 b++;
                 Vector3 tmpPos = bowlingPins.transform.GetChild(i).localPosition;
                 tmpPos.z = 10;
-                bowlingPins.transform.GetChild(i).transform.SetLocalPositionAndRotation(tmpPos, Quaternion.Euler(new Vector3(-90, 0, 0)));
+                bowlingPins.transform.GetChild(i).GetComponent<Rigidbody>().MovePosition(tmpPos);
+                bowlingPins.transform.GetChild(i).GetComponent<Rigidbody>().MoveRotation(Quaternion.Euler(new Vector3(-90, 0, 0)));
             }
         }
 
         isShutterMove = true;
         isProgressed = false;
-
-        StopCoroutine(Timeout());
-        yield break;
     }
 
     bool isShutterMove = true;
     IEnumerator ShutterAnimation()
     {
+        isShutterMove = true;
+
         bool isDown = true;
         int dir = -1;
         float speed = 0.9f;
         float downYPosition = 0.25f;
         float upYPosition = 0.7f;
+
+        Vector3 strPos = bowlingShutter.transform.localPosition;
+        strPos.y = upYPosition - 0.01f;
+        bowlingShutter.transform.localPosition = strPos;
 
         while (true)
         {
@@ -214,13 +219,23 @@ public class BowlingSystem : MonoBehaviour
             if (tmpPos.y < downYPosition)
             {
                 isShutterMove = false;
+                if (bowlingScoreList.Count > MAX_FRAME_NUMBER && bowlingScoreList[bowlingScoreList.Count - 1].IsFrameEnd())
+                {
+                    Debug.LogError("test");
+                    //end bowling game
+                    yield break;
+                }
+                ResetPin();
                 yield return new WaitForSeconds(1.0f);
                 isDown = !isDown;
                 dir = -dir;
+                tmpPos.y = downYPosition + 0.01f;
+                bowlingShutter.transform.localPosition = tmpPos;
             }
 
-            if (tmpPos.y > upYPosition) 
+            if (tmpPos.y > upYPosition)
             {
+                isShutterMove = false;
                 yield break;
             }
         }
